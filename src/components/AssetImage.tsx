@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { assetUrl } from '../lib'
 
 interface AssetImageProps {
@@ -19,9 +19,15 @@ export function AssetImage({
   fallbackLabel = '图片暂时无法加载',
 }: AssetImageProps) {
   const [loadState, setLoadState] = useState<LoadState>('loading')
+  const imageRef = useRef<HTMLImageElement>(null)
 
   useEffect(() => {
-    setLoadState('loading')
+    const image = imageRef.current
+    if (!image?.complete) {
+      setLoadState('loading')
+      return
+    }
+    setLoadState(image.naturalWidth > 0 ? 'loaded' : 'failed')
   }, [src])
 
   return (
@@ -32,6 +38,7 @@ export function AssetImage({
       <span className="asset-placeholder" aria-hidden="true" />
       {loadState !== 'failed' ? (
         <img
+          ref={imageRef}
           src={assetUrl(src)}
           alt={alt}
           loading={eager ? 'eager' : 'lazy'}
