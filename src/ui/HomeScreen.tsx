@@ -1,6 +1,6 @@
+import { AssetImage } from '../components/AssetImage'
 import { CharacterArt } from '../components/CharacterArt'
 import { getCharacter } from '../data/characters'
-import { assetUrl } from '../lib'
 
 interface HomeScreenProps {
   hasSave: boolean
@@ -14,7 +14,7 @@ export function HomeScreen({ hasSave, savedQuarter, onNew, onContinue }: HomeScr
 
   return (
     <main className="home-screen min-h-dvh">
-      <img className="home-bg" src={assetUrl('assets/scenes/city.jpg')} alt="阳光下的现代都市河岸" />
+      <AssetImage className="home-bg" src="assets/scenes/city.webp" alt="阳光下的现代都市河岸" eager />
       <div className="home-wash" />
       <div className="home-grain" />
 

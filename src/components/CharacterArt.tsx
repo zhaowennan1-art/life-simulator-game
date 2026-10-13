@@ -1,5 +1,4 @@
-import { useState } from 'react'
-import { assetUrl } from '../lib'
+import { AssetImage } from './AssetImage'
 
 interface CharacterArtProps {
   image: string
@@ -9,19 +8,13 @@ interface CharacterArtProps {
 }
 
 export function CharacterArt({ image, name, className = '', eager = false }: CharacterArtProps) {
-  const [failed, setFailed] = useState(false)
-
-  if (failed) {
-    return <div className={`art-fallback ${className}`} role="img" aria-label={`${name}的占位立绘`}><span>{name.slice(0, 1)}</span></div>
-  }
-
   return (
-    <img
-      className={className}
-      src={assetUrl(image)}
+    <AssetImage
+      className={`character-art ${className}`}
+      src={image}
       alt={`${name}人物立绘`}
-      loading={eager ? 'eager' : 'lazy'}
-      onError={() => setFailed(true)}
+      eager={eager}
+      fallbackLabel={name.slice(0, 1)}
     />
   )
 }

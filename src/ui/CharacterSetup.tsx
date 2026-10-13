@@ -56,7 +56,7 @@ export function CharacterSetup({ onBack, onComplete }: CharacterSetupProps) {
               <div className="character-grid">
                 {characters.map((character) => (
                   <button key={character.id} className={`character-card ${character.id === characterId ? 'selected' : ''}`} onClick={() => setCharacterId(character.id)}>
-                    <div className={`character-thumb bg-gradient-to-br ${character.gradient}`}><CharacterArt image={character.image} name={character.name} /></div>
+                    <div className={`character-thumb bg-gradient-to-br ${character.gradient}`}><CharacterArt image={character.thumbnail} name={character.name} /></div>
                     <span>{character.name}</span><small>{character.archetype}</small>
                   </button>
                 ))}

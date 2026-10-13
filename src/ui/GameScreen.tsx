@@ -1,4 +1,5 @@
-import { useMemo, useState, type CSSProperties } from 'react'
+import { useEffect, useMemo, useState, type CSSProperties } from 'react'
+import { AssetImage } from '../components/AssetImage'
 import { CharacterArt } from '../components/CharacterArt'
 import { StatBar } from '../components/StatBar'
 import { actions, getAction } from '../data/actions'
@@ -44,10 +45,18 @@ export function GameScreen({ state, onChange, onExit, onRestart }: GameScreenPro
   const ending = getEnding(state.endingId)
   const keyTimeline = useMemo(() => state.history.filter((item) => item.choiceId || (!item.eventId && !item.actionId)).slice(-4), [state.history])
 
+  useEffect(() => {
+    const nextScene = selectedAction ? getAction(selectedAction)?.scene : undefined
+    if (!nextScene || nextScene === scene) return
+    const image = new Image()
+    image.decoding = 'async'
+    image.src = assetUrl(`assets/scenes/${nextScene}.webp`)
+  }, [scene, selectedAction])
+
   if (state.phase === 'ending') {
     return (
       <main className="ending-screen min-h-dvh" style={{ '--ending-accent': ending.accent } as CSSProperties}>
-        <img className="ending-bg" src={assetUrl('assets/scenes/city.jpg')} alt="都市人生终章背景" />
+        <AssetImage className="ending-bg" src="assets/scenes/city.webp" alt="都市人生终章背景" eager />
         <div className="ending-wash" />
         <section className="ending-card">
           <div className="ending-copy">
@@ -81,7 +90,7 @@ export function GameScreen({ state, onChange, onExit, onRestart }: GameScreenPro
 
       <section className="game-layout">
         <aside className="scene-panel">
-          <img className="scene-image" src={assetUrl(`assets/scenes/${scene}.jpg`)} alt="当前人生场景" />
+          <AssetImage className="scene-image" src={`assets/scenes/${scene}.webp`} alt="当前人生场景" eager />
           <div className="scene-overlay" />
           <CharacterArt image={character.image} name={character.name} className="scene-character" eager />
           <div className="scene-caption"><span>{routeLabel[state.route]}</span><p>{state.quarterNotice ?? `${state.profile.nickname}站在这座城市里，下一步仍由你决定。`}</p></div>
@@ -130,7 +139,7 @@ export function GameScreen({ state, onChange, onExit, onRestart }: GameScreenPro
       {state.phase === 'event' && event && (
         <div className="event-layer" role="dialog" aria-modal="true" aria-label="人生事件">
           <div className="event-card">
-            <div className="event-visual"><img src={assetUrl(`assets/scenes/${scene === 'office' ? 'office' : scene === 'startup' ? 'startup' : 'cafe'}.jpg`)} alt="事件场景" /><span>人生事件 · Q{state.quarter}</span></div>
+            <div className="event-visual"><AssetImage src={`assets/scenes/${scene === 'office' ? 'office' : scene === 'startup' ? 'startup' : 'cafe'}.webp`} alt="事件场景" eager /><span className="event-label">人生事件 · Q{state.quarter}</span></div>
             <div className="event-body"><span className="event-kicker">选择会留下痕迹</span><h2>{event.title}</h2><p>{event.text}</p><div className="event-choices">{event.choices.map((choice) => <button key={choice.id} onClick={() => onChange(chooseEvent(state, choice.id))}><div><span>{choice.label}</span><small>{choice.hint}</small></div><b>→</b></button>)}</div></div>
           </div>
         </div>
